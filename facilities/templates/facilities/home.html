@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}E-Waste Navigator · Find Responsible Facilities{% endblock %}
+
+{% block content %}
+<section class="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_rgba(15,23,42,0))]"></div>
+    <div class="relative mx-auto flex max-w-6xl flex-col gap-16 px-6 py-24 lg:flex-row lg:items-center">
+        <div class="flex-1 space-y-8">
+            <span class="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-1 text-sm uppercase tracking-widest text-sky-200">Zero Waste Future</span>
+            <h1 class="text-4xl font-semibold text-white sm:text-5xl lg:text-6xl">
+                Locate verified e-waste drop-offs, learn the impacts, and earn recycling credits.
+            </h1>
+            <p class="max-w-2xl text-lg text-slate-300">
+                E-Waste Navigator connects you with responsible collection partners, surfaces quick educational insights, and rewards you for recycling devices the right way.
+            </p>
+            <dl class="grid gap-6 sm:grid-cols-3">
+                <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+                    <dt class="text-sm text-slate-400">Facilities in network</dt>
+                    <dd class="mt-2 text-3xl font-semibold text-sky-200">{{ total_facilities }}</dd>
+                </div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+                    <dt class="text-sm text-slate-400">Tracked hazardous components</dt>
+                    <dd class="mt-2 text-3xl font-semibold text-sky-200">{{ total_components }}</dd>
+                </div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-4">
+                    <dt class="text-sm text-slate-400">Device models with insights</dt>
+                    <dd class="mt-2 text-3xl font-semibold text-sky-200">{{ total_device_models }}</dd>
+                </div>
+            </dl>
+        </div>
+        <div class="flex-1">
+            <form action="{% url 'facilities:facility_list' %}" method="get" class="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-sky-500/10">
+                <h2 class="text-xl font-medium text-white">Find a collection or recycling partner</h2>
+                <p class="mt-2 text-sm text-slate-400">Search by city, postal code, or facility name. Filter by service type to quickly surface certified partners.</p>
+                <div class="mt-6 space-y-4">
+                    <div>
+                        <label for="id_query" class="text-sm font-medium text-slate-200">Location or facility</label>
+                        <div class="mt-2 flex rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                            {{ search_form.query }}
+                        </div>
+                    </div>
+                    <div>
+                        <label for="id_service" class="text-sm font-medium text-slate-200">Service filter</label>
+                        <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                            {{ search_form.service }}
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-sky-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300">
+                    Discover facilities near me
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-6 py-20">
+    <div class="flex flex-col gap-12 lg:flex-row lg:items-start">
+        <div class="flex-1 space-y-6">
+            <h2 class="text-3xl font-semibold text-white">Trending collection partners</h2>
+            <p class="text-slate-400">The community rates these facilities highly for accurate sorting, transparent downstream handling, and reward eligibility.</p>
+            <div class="grid gap-6 md:grid-cols-2">
+                {% for facility in featured_facilities %}
+                    <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg shadow-sky-500/10">
+                        <h3 class="text-xl font-semibold text-white">{{ facility.name }}</h3>
+                        <p class="mt-2 text-sm text-slate-400">{{ facility.tagline|default:facility.city }}</p>
+                        <dl class="mt-4 space-y-2 text-sm text-slate-400">
+                            <div class="flex items-center justify-between">
+                                <dt>Location</dt>
+                                <dd class="text-slate-300">{{ facility.city }}, {{ facility.state_province }}</dd>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <dt>Services</dt>
+                                <dd class="text-slate-300">{{ facility.services.all|join:", " }}</dd>
+                            </div>
+                        </dl>
+                        <a href="{% url 'facilities:facility_detail' facility.slug %}" class="mt-6 inline-flex items-center text-sm font-semibold text-sky-300 hover:text-sky-200">View details →</a>
+                    </article>
+                {% empty %}
+                    <p class="text-sm text-slate-500">Add your first verified facility to highlight it here.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <aside class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-lg shadow-emerald-500/10">
+            <h2 class="text-xl font-semibold text-white">Learn before you recycle</h2>
+            <p class="mt-2 text-sm text-slate-400">Short educational modules help residents understand what makes e-waste harmful and how to handle it responsibly.</p>
+            <ul class="mt-6 space-y-4">
+                {% for module in featured_modules %}
+                    <li class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                        <p class="text-xs uppercase tracking-wide text-slate-500">{{ module.get_module_type_display }}</p>
+                        <a href="#" class="mt-1 block text-base font-semibold text-white hover:text-sky-200">
+                            {{ module.title }}
+                        </a>
+                        <p class="mt-2 text-sm text-slate-400 line-clamp-3">{{ module.summary }}</p>
+                    </li>
+                {% empty %}
+                    <li class="text-sm text-slate-500">Curate modules to inspire confident recycling.</li>
+                {% endfor %}
+            </ul>
+        </aside>
+    </div>
+</section>
+
+<section class="bg-slate-900/60 py-16">
+    <div class="mx-auto max-w-6xl px-6">
+        <div class="grid gap-8 lg:grid-cols-3">
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+                <h3 class="text-lg font-semibold text-white">Input device details</h3>
+                <p class="mt-2 text-sm text-slate-400">Choose a listed model or add your own. We compute a projected recovery value so you know what credits to expect.</p>
+                <a href="{% url 'devices:submit' %}" class="mt-4 inline-flex items-center text-sm font-semibold text-sky-300 hover:text-sky-200">Start submission →</a>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+                <h3 class="text-lg font-semibold text-white">Drop off responsibly</h3>
+                <p class="mt-2 text-sm text-slate-400">Get tailored instructions for packaging, data wiping, and on-site requirements at your chosen facility.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+                <h3 class="text-lg font-semibold text-white">Earn recovery credits</h3>
+                <p class="mt-2 text-sm text-slate-400">Track rewards for verified precious metal recovery and reinvest them in sustainable initiatives or perks.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Submit Device · E-Waste Navigator{% endblock %}
+
+{% block content %}
+<section class="bg-slate-950">
+    <div class="mx-auto max-w-4xl px-6 py-12">
+        <h1 class="text-3xl font-semibold text-white">Schedule a responsible drop-off</h1>
+        <p class="mt-2 text-sm text-slate-400">Share your device details so the facility can prepare processing instructions and estimate your credit value.</p>
+
+        <form method="post" class="mt-8 space-y-6 rounded-3xl border border-slate-800 bg-slate-900/70 p-8">
+            {% csrf_token %}
+            <div class="grid gap-6 md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <label class="text-sm font-medium text-slate-200" for="id_device_model">Known device model</label>
+                    <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                        {{ form.device_model }}
+                    </div>
+                    <p class="mt-2 text-xs text-slate-500">If your device is not in the list, leave this blank and describe it below.</p>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-sm font-medium text-slate-200" for="id_custom_device_name">Custom device name</label>
+                    <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                        {{ form.custom_device_name }}
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-200" for="id_drop_off_facility">Preferred facility</label>
+                    <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                        {{ form.drop_off_facility }}
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-200" for="id_estimated_precious_metal_mass">Estimated precious metal mass (g)</label>
+                    <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                        {{ form.estimated_precious_metal_mass }}
+                    </div>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-sm font-medium text-slate-200" for="id_message_to_facility">Message to facility</label>
+                    <div class="mt-2 rounded-xl border border-slate-700 bg-slate-950/40 focus-within:border-sky-400">
+                        {{ form.message_to_facility }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                {{ form.agree_to_guidelines }}
+                <label for="id_agree_to_guidelines" class="text-sm text-slate-300">I confirm I have wiped personal data and will follow packaging instructions.</label>
+            </div>
+            {% if form.non_field_errors %}
+                <div class="rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <button type="submit" class="w-full rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-sky-400">Submit device for review</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

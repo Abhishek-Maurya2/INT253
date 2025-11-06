@@ -1,0 +1,54 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Waste Facility Locator{% endblock %}</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <header class="bg-slate-900/70 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+            <a href="{% url 'facilities:home' %}" class="flex items-center gap-2 text-sky-300 hover:text-sky-200 transition">
+                <span class="text-lg font-semibold tracking-wide">E-Waste Navigator</span>
+            </a>
+            <nav class="space-x-6 text-sm font-medium">
+                <a href="{% url 'facilities:facility_list' %}" class="hover:text-sky-200 transition">Find Facilities</a>
+                <a href="{% url 'devices:catalog' %}" class="hover:text-sky-200 transition">Device Library</a>
+                <a href="{% url 'devices:submit' %}" class="hover:text-sky-200 transition">Submit Device</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="mx-auto max-w-4xl px-6 pt-6">
+            <div class="space-y-3">
+                {% for message in messages %}
+                    <div class="rounded-lg border border-sky-400/40 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-slate-900 bg-slate-950/80">
+        <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
+            <p>&copy; {% now 'Y' %} E-Waste Navigator. All rights reserved.</p>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-slate-200 transition">Privacy</a>
+                <a href="#" class="hover:text-slate-200 transition">Support</a>
+                <a href="#" class="hover:text-slate-200 transition">Educate</a>
+            </div>
+        </div>
+    </footer>
+    {% if debug %}
+        <script src="{% url 'django_browser_reload:events' %}" defer></script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Device Library · E-Waste Navigator{% endblock %}
+
+{% block content %}
+<section class="bg-slate-950">
+    <div class="mx-auto max-w-6xl px-6 py-12">
+        <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+                <h1 class="text-3xl font-semibold text-white">Device library</h1>
+                <p class="mt-2 text-sm text-slate-400">Explore pre-mapped electronics with hazardous component insights and estimated reward values.</p>
+            </div>
+            <form method="get" class="flex flex-wrap items-center gap-3">
+                <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search by model name" class="w-64 rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-400 focus:outline-none">
+                <select name="category" class="rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-100 focus:border-sky-400 focus:outline-none">
+                    <option value="">All categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400">Filter</button>
+            </form>
+        </header>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {% for device in devices %}
+                <article class="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-slate-500">{{ device.category.name }}</p>
+                            <h2 class="mt-1 text-xl font-semibold text-white">{{ device.manufacturer }} {{ device.model_name }}</h2>
+                        </div>
+                        {% if device.image_url %}
+                            <img src="{{ device.image_url }}" alt="{{ device }}" class="h-16 w-16 rounded-lg border border-slate-800 object-cover">
+                        {% endif %}
+                    </div>
+                    <p class="mt-4 text-sm text-slate-400 line-clamp-4">{{ device.description|default:"No description yet." }}</p>
+                    <dl class="mt-4 space-y-2 text-sm text-slate-300">
+                        <div class="flex items-center justify-between">
+                            <dt>Estimated credits</dt>
+                            <dd class="text-sky-200 font-semibold">{{ device.estimated_points }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <dt>Key hazards</dt>
+                            <dd>
+                                <ul class="flex flex-wrap gap-2">
+                                    {% for component in device.components.all|slice:":3" %}
+                                        <li class="rounded-full border border-sky-400/30 px-3 py-1 text-xs text-sky-200">{{ component.name }}</li>
+                                    {% empty %}
+                                        <li class="text-xs text-slate-500">Add component mapping</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                    <div class="mt-6 flex gap-3">
+                        <a href="{% url 'devices:detail' device.slug %}" class="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-sky-400 hover:text-sky-200">View insights</a>
+                        <a href="{% url 'devices:submit' %}?device={{ device.slug }}" class="inline-flex flex-1 items-center justify-center rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400">Submit</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-12 text-center text-sm text-slate-400">
+                    No device records yet. Start by mapping common electronics in the admin dashboard.
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="mt-12 flex items-center justify-center gap-2 text-sm text-slate-300">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="rounded-full border border-slate-700 px-3 py-1 hover:border-sky-400">Previous</a>
+                {% endif %}
+                <span class="rounded-full border border-slate-700 px-3 py-1">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="rounded-full border border-slate-700 px-3 py-1 hover:border-sky-400">Next</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
