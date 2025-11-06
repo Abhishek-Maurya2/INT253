@@ -5,7 +5,10 @@
  * https://unpkg.com/browse/tailwindcss@latest/stubs/defaultConfig.stub.js
  */
 
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
+    darkMode: 'class',
     content: [
         /**
          * HTML. Paths to Django template files that will contain Tailwind CSS classes.
@@ -42,7 +45,12 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                sans: ['"Inter"', ...defaultTheme.fontFamily.sans],
+                display: ['"Space Grotesk"', ...defaultTheme.fontFamily.sans],
+            },
+        },
     },
     plugins: [
         /**
