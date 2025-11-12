@@ -20,7 +20,10 @@
             <section class="lg:col-span-2">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Recent submissions</h2>
-                    <a href="{% url 'devices:submit' %}" class="text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Submit another device</a>
+                    <a href="{% url 'devices:submit' %}" class="text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                        Submit another device
+                    </a>
                 </div>
                 <div class="mt-4 space-y-4">
                     {% for submission in submissions %}
@@ -28,7 +31,7 @@
                             <div class="flex items-center justify-between">
                                 <h3 class="text-base font-semibold text-slate-900 dark:text-white">{{ submission.display_name }}</h3>
                                 <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                                    <span class="h-2 w-2 rounded-full {% if submission.status == 'credited' %}bg-emerald-400{% elif submission.status == 'pending' %}bg-amber-400{% else %}bg-slate-400{% endif %}"></span>
+                                    <i class="fa-solid fa-circle {% if submission.status == 'credited' %}text-emerald-400{% elif submission.status == 'pending' %}text-amber-400{% else %}text-slate-400{% endif %}"></i>
                                     {{ submission.get_status_display }}
                                 </span>
                             </div>
@@ -52,8 +55,8 @@
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for facility in facilities %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white">{{ facility.name }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500">{{ facility.city }}, {{ facility.state }}</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-location-dot mr-2 text-xs text-sky-500"></i>{{ facility.name }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-map mr-2"></i>{{ facility.city }}, {{ facility.state }}</p>
                             </li>
                         {% empty %}
                             <li>No facilities yet—check back soon.</li>
@@ -61,9 +64,7 @@
                     </ul>
                     <a href="{% url 'facilities:facility_list' %}" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
                         View full directory
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
                     </a>
                 </div>
                 <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
@@ -71,8 +72,8 @@
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for module in modules %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white">{{ module.title }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500">{{ module.subtitle }}</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-graduation-cap mr-2 text-xs text-emerald-500"></i>{{ module.title }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-book mr-2"></i>{{ module.subtitle }}</p>
                             </li>
                         {% empty %}
                             <li>Stay tuned—new learning drops coming soon.</li>
@@ -80,9 +81,7 @@
                     </ul>
                     <a href="{% url 'facilities:home' %}#education" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
                         Explore all modules
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
                     </a>
                 </div>
                 <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
@@ -90,8 +89,8 @@
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for reward in rewards %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white">{{ reward.name }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500">Requires {{ reward.points_required }} credits</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-gift mr-2 text-xs text-amber-500"></i>{{ reward.name }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-coins mr-2"></i>Requires {{ reward.points_required }} credits</p>
                             </li>
                         {% empty %}
                             <li>Rewards catalog coming soon.</li>

@@ -3,20 +3,29 @@
 {% block title %}Submission Received · E-Waste Navigator{% endblock %}
 
 {% block content %}
-<section class="bg-slate-950">
+<section class="bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
     <div class="mx-auto max-w-3xl px-6 py-20 text-center">
-        <div class="mx-auto w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-900/70 p-10 shadow-xl shadow-sky-500/10">
-            <svg class="mx-auto h-12 w-12 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m4.5 12.75 6 6 9-13.5" />
-            </svg>
-            <h1 class="mt-6 text-3xl font-semibold text-white">Submission received!</h1>
-            <p class="mt-3 text-sm text-slate-400">Thanks for sharing your device details. We’ve logged your request and will notify you when the facility confirms the drop-off.</p>
+        <div class="mx-auto w-full max-w-lg rounded-3xl border border-slate-200 bg-white/95 p-10 shadow-xl shadow-slate-100 transition-colors dark:border-slate-800 dark:bg-slate-900/70 dark:shadow-slate-900/40">
+            <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-100 text-3xl text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
+                <i class="fa-solid fa-circle-check"></i>
+            </span>
+            <h1 class="mt-6 text-3xl font-semibold text-slate-900 transition-colors dark:text-white">Submission received!</h1>
+            <p class="mt-3 text-sm text-slate-600 transition-colors dark:text-slate-400">Thanks for sharing your device details. We’ve logged your request and will notify you when the facility confirms the drop-off.</p>
             <div class="mt-8 flex flex-col gap-3">
-                <a href="{% url 'devices:catalog' %}" class="inline-flex items-center justify-center rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-sky-400">Browse more devices</a>
+                <a href="{% url 'devices:catalog' %}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500 dark:text-slate-950">
+                    <i class="fa-solid fa-list"></i>
+                    Browse more devices
+                </a>
                 {% if request.GET.facility %}
-                    <a href="{% url 'facilities:facility_detail' request.GET.facility %}" class="inline-flex items-center justify-center rounded-xl border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-200 hover:border-sky-400 hover:text-sky-200">View facility guidance</a>
+                    <a href="{% url 'facilities:facility_detail' request.GET.facility %}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:text-sky-200">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        View facility guidance
+                    </a>
                 {% else %}
-                    <a href="{% url 'facilities:facility_list' %}" class="inline-flex items-center justify-center rounded-xl border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-200 hover:border-sky-400 hover:text-sky-200">Find a facility</a>
+                    <a href="{% url 'facilities:facility_list' %}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:text-sky-200">
+                        <i class="fa-solid fa-location-arrow"></i>
+                        Find a facility
+                    </a>
                 {% endif %}
             </div>
         </div>

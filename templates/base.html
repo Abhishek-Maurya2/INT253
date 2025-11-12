@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"  />
     <script>
         (function () {
             try {
@@ -28,33 +29,20 @@
     <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900/70">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <a href="{% url 'facilities:home' %}" class="flex items-center gap-2 text-sky-600 transition hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
-                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0ZM20 8.5c0 .83-.67 1.5-1.5 1.5S17 9.33 17 8.5 17.67 7 18.5 7 20 7.67 20 8.5ZM17 18.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M5.5 6a8.5 8.5 0 0 1 13.5 2.33" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M8.91 20.5A8.5 8.5 0 0 1 4 11.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M19 9.5a8.5 8.5 0 0 1-8.27 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <span class="text-2xl"><i class="fa-solid fa-recycle"></i></span>
                 <span class="font-display text-xl font-semibold tracking-wide">E-Waste Navigator</span>
             </a>
             <nav class="flex items-center gap-2 text-sm font-medium">
                 <a href="{% url 'facilities:facility_list' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M4.5 21.5v-9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M13.5 21.5v-5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M3 9.5 12 3l9 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-location-dot text-sm"></i>
                     <span>Find Facilities</span>
                 </a>
                 <a href="{% url 'devices:catalog' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M4 7h6V4H4v3Zm10 0h6V4h-6v3ZM4 14h6v-3H4v3Zm10 0h6v-3h-6v3ZM4 21h6v-3H4v3Zm10 0h6v-3h-6v3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-tablet-screen-button text-sm"></i>
                     <span>Device Library</span>
                 </a>
                 <a href="{% url 'devices:submit' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-plus text-sm"></i>
                     <span>Submit Device</span>
                 </a>
                 {% if request.user.is_authenticated %}
@@ -63,48 +51,31 @@
                     {% else %}
                         <a href="{% url 'accounts:user_dashboard' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
                     {% endif %}
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.33 0-6 1.34-6 3v1h12v-1c0-1.66-2.67-3-6-3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fa-solid fa-circle-user text-sm"></i>
                         <span>{% if request.user.is_staff %}Admin{% else %}Dashboard{% endif %}</span>
                         </a>
                     <form method="post" action="{% url 'accounts:logout' %}" class="inline-flex">
                         {% csrf_token %}
                         <button type="submit" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-500 dark:text-slate-300 dark:hover:bg-rose-500/10 dark:hover:text-rose-200">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M15 7 10 12l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M13 12h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M4 19V5a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                            <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
                             <span>Sign out</span>
                         </button>
                     </form>
                 {% else %}
                     <a href="{% url 'accounts:login' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M15 7 10 12l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M14 12H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M20 19V5a2 2 0 0 0-2-2h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fa-solid fa-arrow-right-to-bracket text-sm"></i>
                         <span>Sign in</span>
                     </a>
                     <a href="{% url 'accounts:register' %}" class="inline-flex items-center gap-2 rounded-full border border-sky-200 px-3 py-2 text-sky-600 transition hover:bg-sky-50 hover:text-sky-500 dark:border-sky-500/60 dark:text-sky-300 dark:hover:bg-sky-500/10 dark:hover:text-sky-200">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <i class="fa-solid fa-user-plus text-sm"></i>
                         <span>Join</span>
                     </a>
                 {% endif %}
-                <button type="button" data-theme-toggle aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 transition hover:border-sky-400 hover:bg-slate-100 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
+                <button type="button" data-theme-toggle aria-pressed="false" class="rounded-full border border-slate-200 text-slate-600 transition hover:border-sky-400 hover:bg-slate-100 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
                     <span class="sr-only">Toggle theme</span>
-                    <svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 4V2M12 22v-2M4 12H2m20 0h-2M5.64 5.64 4.22 4.22m15.56 15.56-1.42-1.42M18.36 5.64l1.42-1.42M5.64 18.36 4.22 19.78" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
-                    </svg>
-                    <svg class="theme-icon-moon hidden h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 0 0 12 17a7 7 0 0 0 9-4.21Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="theme-toggle-label">Light Mode</span>
+                    <i class="theme-icon-sun fa-solid fa-sun text-sm"></i>
+                    <i class="theme-icon-moon fa-solid fa-moon hidden text-sm"></i>
+                 
                 </button>
             </nav>
         </div>
@@ -129,28 +100,20 @@
     <footer class="border-t border-slate-200 bg-white/90 transition-colors duration-300 dark:border-slate-900 dark:bg-slate-950/80">
         <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-slate-500 transition-colors duration-300 md:flex-row md:items-center md:justify-between dark:text-slate-400">
             <p class="flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M3 6h18M5 6v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6M9 6V4a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <i class="fa-solid fa-shield-heart text-sm"></i>
                 <span>&copy; {% now 'Y' %} E-Waste Navigator. All rights reserved.</span>
             </p>
             <div class="flex gap-4">
                 <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4ZM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-user-shield text-sm"></i>
                     <span>Privacy</span>
                 </a>
                 <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 22c5.523 0 10-3.582 10-8s-4.477-8-10-8S2 9.582 2 14c0 1.914.798 3.676 2.145 5.051L4 22l3.332-1.11C8.418 21.6 10.152 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-comments text-sm"></i>
                     <span>Support</span>
                 </a>
                 <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M5 5h14M5 12h14M5 19h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <i class="fa-solid fa-book-open text-sm"></i>
                     <span>Educate</span>
                 </a>
             </div>
@@ -174,9 +137,7 @@
                 const syncState = () => {
                     const isDark = root.classList.contains('dark');
                     toggle.setAttribute('aria-pressed', String(isDark));
-                    if (label) {
-                        label.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-                    }
+                    
                     if (sunIcon && moonIcon) {
                         sunIcon.classList.toggle('hidden', isDark);
                         moonIcon.classList.toggle('hidden', !isDark);

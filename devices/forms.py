@@ -21,29 +21,29 @@ class DeviceSubmissionForm(forms.ModelForm):
         ]
         widgets = {
             "device_model": forms.Select(attrs={
-                "class": "w-full rounded-xl border-0 bg-transparent px-4 py-3 text-slate-100 focus:outline-none",
+                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
             }),
             "custom_device_name": forms.TextInput(
                 attrs={
                     "placeholder": "Enter model name",
-                    "class": "w-full rounded-xl border-0 bg-transparent px-4 py-3 text-slate-100 focus:outline-none",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
                 }
             ),
             "drop_off_facility": forms.Select(attrs={
-                "class": "w-full rounded-xl border-0 bg-transparent px-4 py-3 text-slate-100 focus:outline-none",
+                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
             }),
             "estimated_precious_metal_mass": forms.NumberInput(
                 attrs={
                     "min": "0",
                     "step": "0.01",
-                    "class": "w-full rounded-xl border-0 bg-transparent px-4 py-3 text-slate-100 focus:outline-none",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
                 }
             ),
             "message_to_facility": forms.Textarea(
                 attrs={
                     "rows": 3,
                     "placeholder": "Add pickup or drop-off notes",
-                    "class": "w-full rounded-xl border-0 bg-transparent px-4 py-3 text-slate-100 focus:outline-none",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
                 }
             ),
         }
