@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign in · E-Waste Navigator{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 py-16 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+    <div class="mx-auto grid max-w-5xl gap-12 px-6 lg:grid-cols-2">
+        <div class="flex flex-col justify-center space-y-6">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 21s-7-4.35-7-10.5A7 7 0 0 1 12 3a7 7 0 0 1 7 7.5C19 16.65 12 21 12 21Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/>
+                </svg>
+                Access your impact hub
+            </span>
+            <h1 class="font-display text-4xl font-semibold text-slate-900 dark:text-white">Welcome back</h1>
+            <p class="text-base text-slate-600 dark:text-slate-400">Track recycling submissions, unlock rewards, and manage facilities in one place.</p>
+            <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-500">
+                <li class="flex items-start gap-3">
+                    <svg class="mt-1 h-4 w-4 text-sky-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Instant access to your recent submissions and credits
+                </li>
+                <li class="flex items-start gap-3">
+                    <svg class="mt-1 h-4 w-4 text-sky-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Admins can maintain facility data directly from the dashboard
+                </li>
+                <li class="flex items-start gap-3">
+                    <svg class="mt-1 h-4 w-4 text-sky-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Stay informed with curated learning modules
+                </li>
+            </ul>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white/90 p-10 shadow-xl dark:border-slate-800 dark:bg-slate-900/80">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+                <div class="space-y-2">
+                    <label for="id_username" class="text-sm font-medium text-slate-700 dark:text-slate-300">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="text-xs text-rose-500">{{ form.username.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label for="id_password" class="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <p class="text-xs text-rose-500">{{ form.password.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+                {% if form.non_field_errors %}
+                    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:border-rose-600/40 dark:bg-rose-900/40 dark:text-rose-200">
+                        {{ form.non_field_errors|striptags }}
+                    </div>
+                {% endif %}
+                <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-500 dark:text-slate-950">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M8 5h8M5 12h14M10 19h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign in
+                </button>
+            </form>
+            <p class="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+                New to the platform?
+                <a href="{% url 'accounts:register' %}" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Create an account</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

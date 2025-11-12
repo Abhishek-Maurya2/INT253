@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Your dashboard · E-Waste Navigator{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 pb-20 pt-12 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+    <div class="mx-auto max-w-6xl px-6">
+        <header class="flex flex-col gap-6 pb-10 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Welcome back</p>
+                <h1 class="mt-2 font-display text-4xl font-semibold text-slate-900 dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</h1>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Review your latest recycling actions and discover nearby facilities.</p>
+            </div>
+            <div class="rounded-3xl border border-sky-200 bg-sky-50 px-6 py-4 text-sky-700 shadow-sm dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-200">
+                <p class="text-xs uppercase tracking-[0.2em]">Total credits</p>
+                <p class="mt-1 text-3xl font-semibold">{{ profile.total_credits }}</p>
+            </div>
+        </header>
+
+        <div class="grid gap-8 lg:grid-cols-3">
+            <section class="lg:col-span-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Recent submissions</h2>
+                    <a href="{% url 'devices:submit' %}" class="text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Submit another device</a>
+                </div>
+                <div class="mt-4 space-y-4">
+                    {% for submission in submissions %}
+                        <article class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">{{ submission.display_name }}</h3>
+                                <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                                    <span class="h-2 w-2 rounded-full {% if submission.status == 'credited' %}bg-emerald-400{% elif submission.status == 'pending' %}bg-amber-400{% else %}bg-slate-400{% endif %}"></span>
+                                    {{ submission.get_status_display }}
+                                </span>
+                            </div>
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                                Submitted {{ submission.submitted_at|date:"M j, Y" }}
+                                {% if submission.drop_off_facility %}
+                                    · Drop-off: {{ submission.drop_off_facility.name }}
+                                {% endif %}
+                            </p>
+                        </article>
+                    {% empty %}
+                        <div class="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-400">
+                            No submissions yet. <a href="{% url 'devices:submit' %}" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Start your first recycling claim.</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <aside class="space-y-8">
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Nearby facilities</h3>
+                    <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                        {% for facility in facilities %}
+                            <li>
+                                <p class="font-semibold text-slate-900 dark:text-white">{{ facility.name }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500">{{ facility.city }}, {{ facility.state }}</p>
+                            </li>
+                        {% empty %}
+                            <li>No facilities yet—check back soon.</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'facilities:facility_list' %}" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                        View full directory
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Learn and earn</h3>
+                    <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                        {% for module in modules %}
+                            <li>
+                                <p class="font-semibold text-slate-900 dark:text-white">{{ module.title }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500">{{ module.subtitle }}</p>
+                            </li>
+                        {% empty %}
+                            <li>Stay tuned—new learning drops coming soon.</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'facilities:home' %}#education" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                        Explore all modules
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Rewards</h3>
+                    <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                        {% for reward in rewards %}
+                            <li>
+                                <p class="font-semibold text-slate-900 dark:text-white">{{ reward.name }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-500">Requires {{ reward.points_required }} credits</p>
+                            </li>
+                        {% empty %}
+                            <li>Rewards catalog coming soon.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard · E-Waste Navigator{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 pb-20 pt-12 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+    <div class="mx-auto max-w-6xl px-6">
+        <header class="flex flex-col gap-6 pb-10 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Admin control panel</p>
+                <h1 class="mt-2 font-display text-4xl font-semibold text-slate-900 dark:text-white">Hello, {{ request.user.get_full_name|default:request.user.username }}</h1>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Manage the datasets that power the recycling experience.</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="{% url 'admin:index' %}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:text-sky-200">
+                    Go to Django admin
+                </a>
+            </div>
+        </header>
+
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">Facilities</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ facility_total }}</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Active drop-off locations</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">Device models</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ device_total }}</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Catalogued devices</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">Submissions</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ submission_total }}</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Total recycling intents</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">Rewards</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ reward_total }}</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Incentives available</p>
+            </div>
+        </section>
+
+        <section class="mt-12 grid gap-8 lg:grid-cols-3">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Primary actions</h2>
+                    <div class="mt-6 grid gap-6 md:grid-cols-2">
+                        {% for action in actions %}
+                            <a href="{{ action.href }}" class="group rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-400 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900/60">
+                                <h3 class="text-base font-semibold text-slate-900 transition group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-300">{{ action.title }}</h3>
+                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ action.description }}</p>
+                                <span class="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500 transition group-hover:text-sky-600 dark:text-slate-500 dark:group-hover:text-sky-300">
+                                    Manage
+                                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Quick add</h2>
+                    <ul class="mt-4 space-y-3">
+                        {% for item in quick_add %}
+                            <li>
+                                <a href="{{ item.href }}" class="inline-flex w-full items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:text-sky-200">
+                                    {{ item.label }}
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Need more tools?</h2>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Access advanced settings, user management, and audits through the Django admin console.</p>
+                    <a href="{% url 'admin:index' %}" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                        Open Django admin
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M13 5h6m0 0v6m0-6-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock %}
