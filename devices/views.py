@@ -1,10 +1,14 @@
-from decimal import Decimal
+import json
+from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
+from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from facilities.models import Facility
+from ewaste.services.gemini import estimate_device_metrics
 
 from .forms import DeviceSubmissionForm
 from .models import DeviceCategory, DeviceModel, DeviceSubmission
@@ -76,6 +80,39 @@ class DeviceSubmissionView(FormView):
         submission.save()
         form.save_m2m()
 
+        ai_payload = {
+            "device_name": submission.display_name,
+            "device_category": submission.device_model.category.name if submission.device_model else submission.device_type,
+            "facility_name": submission.drop_off_facility.name if submission.drop_off_facility else None,
+            "user_estimated_mass": form.cleaned_data.get("estimated_precious_metal_mass"),
+            "components": [component.name for component in submission.device_model.components.all()] if submission.device_model else [],
+            "user_notes": submission.message_to_facility,
+            "device_type": submission.device_type,
+            "pickup_address": submission.pickup_address,
+        }
+        ai_estimate = estimate_device_metrics(ai_payload)
+        if ai_estimate:
+            mass = ai_estimate.get("estimated_precious_metal_mass_grams")
+            credit_value = ai_estimate.get("estimated_credit_value")
+
+            if mass is not None:
+                try:
+                    submission.estimated_precious_metal_mass = Decimal(mass)
+                except (InvalidOperation, TypeError):
+                    pass
+
+            if credit_value is not None:
+                try:
+                    submission.estimated_credit_value = Decimal(credit_value)
+                except (InvalidOperation, TypeError):
+                    pass
+
+            submission.save(update_fields=[
+                "estimated_precious_metal_mass",
+                "estimated_credit_value",
+                "updated_at",
+            ])
+
         messages.success(
             self.request,
             "Thanks! Your device submission has been recorded. We will email you updates after the drop-off.",
@@ -93,3 +130,44 @@ class DeviceSubmissionView(FormView):
 
 class DeviceSubmissionSuccessView(TemplateView):
     template_name = "devices/device_submission_success.html"
+
+
+class DeviceEstimateView(View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            payload = json.loads(request.body.decode("utf-8") or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "invalid_payload"}, status=400)
+
+        ai_payload = {
+            "device_name": payload.get("device_name"),
+            "device_category": payload.get("device_category"),
+            "device_type": payload.get("device_type"),
+            "facility_name": payload.get("facility_name"),
+            "user_estimated_mass": payload.get("user_estimated_mass"),
+            "components": payload.get("components", []),
+            "user_notes": payload.get("user_notes"),
+            "pickup_address": payload.get("pickup_address"),
+        }
+
+        ai_estimate = estimate_device_metrics(ai_payload)
+        if not ai_estimate:
+            return JsonResponse({"success": False}, status=422)
+
+        response_data = {"success": True}
+
+        mass = ai_estimate.get("estimated_precious_metal_mass_grams")
+        if mass is not None:
+            response_data["estimated_precious_metal_mass_grams"] = str(mass)
+
+        credit_value = ai_estimate.get("estimated_credit_value")
+        if credit_value is not None:
+            response_data["estimated_credit_value"] = str(credit_value)
+
+        confidence = ai_estimate.get("confidence")
+        if confidence:
+            response_data["confidence"] = confidence
+
+        return JsonResponse(response_data)

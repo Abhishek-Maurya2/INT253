@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch
 
 from accounts.models import CreditTransaction
 from devices.models import DeviceCategory, DeviceModel, DeviceSubmission
@@ -121,3 +122,19 @@ class DeviceSubmissionFlowTests(TestCase):
 		transactions = CreditTransaction.objects.filter(profile=profile)
 		self.assertEqual(transactions.count(), 1)
 		self.assertEqual(transactions.first().amount, submission.estimated_credit_value)
+
+	@patch("devices.views.estimate_device_metrics")
+	def test_ai_estimate_overrides_default_values(self, mock_estimate):
+		mock_estimate.return_value = {
+			"estimated_precious_metal_mass_grams": Decimal("17.50"),
+			"estimated_credit_value": Decimal("88.00"),
+		}
+
+		response = self._submit_device()
+		expected_redirect = reverse("devices:submission_success") + f"?facility={self.facility.slug}"
+		self.assertRedirects(response, expected_redirect)
+
+		submission = DeviceSubmission.objects.get(user=self.user)
+		self.assertEqual(submission.estimated_precious_metal_mass, Decimal("17.50"))
+		self.assertEqual(submission.estimated_credit_value, Decimal("88.00"))
+		mock_estimate.assert_called_once()

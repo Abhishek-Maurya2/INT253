@@ -101,6 +101,11 @@ class DeviceSubmission(models.Model):
 		blank=True,
 		help_text="Provide the device name if it is not listed.",
 	)
+	device_type = models.CharField(
+		max_length=120,
+		blank=True,
+		help_text="General category such as phone, laptop, or monitor.",
+	)
 	drop_off_facility = models.ForeignKey(
 		'facilities.Facility',
 		related_name='device_submissions',
@@ -117,6 +122,7 @@ class DeviceSubmission(models.Model):
 	)
 	estimated_credit_value = models.DecimalField(max_digits=9, decimal_places=2, default=Decimal("0.00"))
 	message_to_facility = models.CharField(max_length=280, blank=True)
+	pickup_address = models.TextField(blank=True)
 	submitted_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(auto_now=True)
 
