@@ -21,29 +21,29 @@ class DeviceSubmissionForm(forms.ModelForm):
         ]
         widgets = {
             "device_model": forms.Select(attrs={
-                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
+                "class": "w-full appearance-none rounded-xl border-0 bg-transparent pl-12 pr-12 py-3 text-sm text-slate-700 focus:outline-none dark:text-slate-100",
             }),
             "custom_device_name": forms.TextInput(
                 attrs={
                     "placeholder": "Enter model name",
-                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
                 }
             ),
             "drop_off_facility": forms.Select(attrs={
-                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
+                "class": "w-full appearance-none rounded-xl border-0 bg-transparent pl-12 pr-12 py-3 text-sm text-slate-700 focus:outline-none dark:text-slate-100",
             }),
             "estimated_precious_metal_mass": forms.NumberInput(
                 attrs={
                     "min": "0",
                     "step": "0.01",
-                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-sm text-slate-700 focus:outline-none dark:text-slate-100",
                 }
             ),
             "message_to_facility": forms.Textarea(
                 attrs={
                     "rows": 3,
                     "placeholder": "Add pickup or drop-off notes",
-                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
+                    "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
                 }
             ),
         }
@@ -55,7 +55,7 @@ class DeviceSubmissionForm(forms.ModelForm):
         self.fields["estimated_precious_metal_mass"].initial = Decimal("0.00")
         self.fields["agree_to_guidelines"].widget.attrs.update(
             {
-                "class": "h-4 w-4 rounded border-slate-700 bg-slate-900/40 text-sky-400 focus:ring-sky-400",
+                "class": "h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400 dark:border-slate-600 dark:bg-slate-900/60",
             }
         )
 

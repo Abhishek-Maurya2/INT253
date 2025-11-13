@@ -10,7 +10,7 @@ class FacilitySearchForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "City, postal code, or facility name",
-                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
+                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder-slate-500",
             }
         ),
     )
@@ -21,7 +21,7 @@ class FacilitySearchForm(forms.Form):
         empty_label="All services",
         widget=forms.Select(
             attrs={
-                "class": "w-full rounded-xl border-0 bg-transparent pl-12 pr-8 py-3 text-slate-700 focus:outline-none dark:text-slate-100",
+                "class": "w-full appearance-none rounded-xl border-0 bg-transparent pl-12 pr-10 py-3 text-sm text-slate-700 focus:outline-none dark:text-slate-100",
             }
         ),
     )
