@@ -146,5 +146,5 @@ LOGIN_URL = 'accounts:login'
 
 
 # External services
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSyBMY4EPNctAvZQKau2eKIyLzTJfbQ3_Nnw')
 GEMINI_MODEL_NAME = os.getenv('GEMINI_MODEL_NAME', 'gemini-1.5-flash')

@@ -97,6 +97,7 @@ class DeviceSubmissionForm(forms.ModelForm):
             }
         )
         self.fields["estimated_credit_value"].initial = Decimal("0.00")
+        self.fields["estimated_credit_value"].required = False
 
     def clean(self):
         cleaned_data = super().clean()

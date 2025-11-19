@@ -100,6 +100,10 @@ def admin_dashboard(request: HttpRequest) -> HttpResponse:
 	device_total = DeviceModel.objects.count()
 	submission_total = DeviceSubmission.objects.count()
 	reward_total = Reward.objects.count()
+	recent_submissions = (
+		DeviceSubmission.objects.select_related("user", "drop_off_facility", "device_model")
+		.order_by("-submitted_at")[:6]
+	)
 
 	actions = [
 		{
@@ -153,5 +157,6 @@ def admin_dashboard(request: HttpRequest) -> HttpResponse:
 			"reward_total": reward_total,
 			"actions": actions,
 			"quick_add": quick_add,
+			"recent_submissions": recent_submissions,
 		},
 	)

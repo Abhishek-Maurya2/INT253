@@ -2,8 +2,11 @@ import json
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
@@ -171,3 +174,41 @@ class DeviceEstimateView(View):
             response_data["confidence"] = confidence
 
         return JsonResponse(response_data)
+
+
+def _staff_only(user):
+    return user.is_staff
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(user_passes_test(_staff_only), name="dispatch")
+class DeviceSubmissionStatusView(View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        submission = get_object_or_404(DeviceSubmission, pk=kwargs.get("pk"))
+        action = request.POST.get("action")
+
+        action_map = {
+            "mark_received": DeviceSubmission.RECEIVED,
+            "approve": DeviceSubmission.CREDITED,
+            "cancel": DeviceSubmission.CANCELLED,
+        }
+
+        if action not in action_map:
+            messages.error(request, "Unknown submission action.")
+            return redirect("accounts:admin_dashboard")
+
+        target_status = action_map[action]
+
+        if submission.status == target_status:
+            messages.info(request, "Submission is already updated.")
+            return redirect("accounts:admin_dashboard")
+
+        submission.status = target_status
+        submission.save(update_fields=["status"])
+
+        status_label = submission.get_status_display()
+        messages.success(request, f"Submission status updated to {status_label}.")
+
+        return redirect("accounts:admin_dashboard")

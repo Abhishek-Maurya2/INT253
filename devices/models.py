@@ -125,6 +125,8 @@ class DeviceSubmission(models.Model):
 	pickup_address = models.TextField(blank=True)
 	submitted_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(auto_now=True)
+	catalog_entry_created = models.BooleanField(default=False)
+	credits_awarded = models.BooleanField(default=False)
 
 	class Meta:
 		ordering = ["-submitted_at"]
@@ -136,3 +138,114 @@ class DeviceSubmission(models.Model):
 	@property
 	def display_name(self) -> str:
 		return self.custom_device_name or (self.device_model and str(self.device_model)) or "Custom device"
+
+	def save(self, *args, **kwargs):
+		previous_status = None
+		if self.pk:
+			previous_status = (
+				DeviceSubmission.objects.filter(pk=self.pk).values_list("status", flat=True).first()
+			)
+		super().save(*args, **kwargs)
+
+		status_changed = previous_status != self.status
+		if not status_changed:
+			return
+
+		if self.status in {self.RECEIVED, self.CREDITED}:
+			self._ensure_catalog_entry()
+
+		if self.status == self.CREDITED:
+			self._award_user_credits()
+
+	def _ensure_catalog_entry(self) -> None:
+		if self.catalog_entry_created:
+			return
+
+		if self.device_model:
+			DeviceSubmission.objects.filter(pk=self.pk).update(catalog_entry_created=True)
+			self.catalog_entry_created = True
+			return
+
+		device_name = (self.custom_device_name or "").strip()
+		if not device_name and not self.device_type:
+			return
+
+		if not device_name:
+			device_name = self.device_type
+
+		parts = device_name.split()
+		if len(parts) > 1:
+			manufacturer = parts[0]
+			model_value = " ".join(parts[1:])
+		else:
+			manufacturer = "Recovered"
+			model_value = device_name
+
+		category = None
+		if self.device_type:
+			category, _ = DeviceCategory.objects.get_or_create(name=self.device_type)
+		elif self.device_model:
+			category = self.device_model.category
+		else:
+			category, _ = DeviceCategory.objects.get_or_create(name="Uncategorized")
+
+		slug_base = slugify(f"{manufacturer}-{model_value}") or slugify(device_name) or f"submission-{self.pk}"
+		slug_value = slug_base
+		counter = 1
+		while DeviceModel.objects.filter(slug=slug_value).exists():
+			slug_value = f"{slug_base}-{counter}"
+			counter += 1
+
+		estimated_points = self.estimated_credit_value or Decimal("0.00")
+		description = self.message_to_facility or "Automatically generated from community submission."
+
+		defaults = {
+			"category": category,
+			"slug": slug_value,
+			"estimated_points": estimated_points,
+			"estimated_recovery_notes": description,
+		}
+		device_model, created = DeviceModel.objects.get_or_create(
+			manufacturer=manufacturer,
+			model_name=model_value,
+			defaults=defaults,
+		)
+		if not created:
+			updated_fields = []
+			if device_model.category != category:
+				device_model.category = category
+				updated_fields.append("category")
+			if not device_model.estimated_recovery_notes and description:
+				device_model.estimated_recovery_notes = description
+				updated_fields.append("estimated_recovery_notes")
+			if not device_model.estimated_points and estimated_points:
+				device_model.estimated_points = estimated_points
+				updated_fields.append("estimated_points")
+			if updated_fields:
+				device_model.save(update_fields=updated_fields)
+
+		DeviceSubmission.objects.filter(pk=self.pk).update(
+			device_model=device_model,
+			catalog_entry_created=True,
+		)
+		self.device_model = device_model
+		self.catalog_entry_created = True
+
+	def _award_user_credits(self) -> None:
+		if self.credits_awarded or not self.user_id:
+			return
+
+		amount = self.estimated_credit_value or Decimal("0.00")
+		if amount <= 0:
+			return
+
+		try:
+			profile = self.user.profile
+		except AttributeError:
+			from accounts.models import UserProfile  # local import to avoid circular
+			profile, _ = UserProfile.objects.get_or_create(user=self.user)
+
+		reason = f"Device submission credited ({self.display_name})"
+		profile.adjust_credits(amount, reason=reason, source="device-submission")
+		DeviceSubmission.objects.filter(pk=self.pk).update(credits_awarded=True)
+		self.credits_awarded = True

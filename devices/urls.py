@@ -10,4 +10,5 @@ urlpatterns = [
     path("submit/", views.DeviceSubmissionView.as_view(), name="submit"),
     path("submit/estimate/", views.DeviceEstimateView.as_view(), name="estimate"),
     path("submit/success/", views.DeviceSubmissionSuccessView.as_view(), name="submission_success"),
+    path("submissions/<int:pk>/status/", views.DeviceSubmissionStatusView.as_view(), name="submission_status"),
 ]

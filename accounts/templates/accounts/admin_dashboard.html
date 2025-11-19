@@ -43,7 +43,7 @@
             </article>
         </section>
 
-        <section class="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+        <section class="grid gap-2">
             <div class="space-y-6">
                 <div class="glass-card">
                     <div class="flex items-center justify-between">
@@ -63,6 +63,122 @@
                                 </span>
                             </a>
                         {% endfor %}
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Recent submissions</h2>
+                        <a href="{% url 'admin:devices_devicesubmission_changelist' %}" class="text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                            View all
+                            <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
+                        </a>
+                    </div>
+                    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800/60">
+                        <table class="min-w-full divide-y divide-slate-200/70 text-left text-sm dark:divide-slate-800/60">
+                            <thead class="bg-slate-50/70 dark:bg-slate-900/40">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Device</th>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Submitted by</th>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Facility</th>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Status</th>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Credits</th>
+                                    <th scope="col" class="px-4 py-3 font-semibold text-slate-500 dark:text-slate-400">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200/70 dark:divide-slate-800/60">
+                                {% for submission in recent_submissions %}
+                                <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-900/40">
+                                    <td class="px-4 py-4">
+                                        <p class="font-medium text-slate-900 dark:text-slate-100">{{ submission.display_name }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-500">{{ submission.submitted_at|date:"M j, H:i" }}</p>
+                                    </td>
+                                    <td class="px-4 py-4 text-slate-600 dark:text-slate-300">
+                                        {% if submission.user %}
+                                            {{ submission.user.get_full_name|default:submission.user.username }}
+                                        {% else %}
+                                            <span class="italic text-slate-400">Guest</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-4 text-slate-600 dark:text-slate-300">
+                                        {% if submission.drop_off_facility %}
+                                            {{ submission.drop_off_facility.name }}
+                                        {% else %}
+                                            <span class="italic text-slate-400">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-4">
+                                        <span class="chip-badge {% if submission.status == submission.PENDING %}text-amber-600 dark:text-amber-200{% elif submission.status == submission.RECEIVED %}text-emerald-600 dark:text-emerald-200{% elif submission.status == submission.CREDITED %}text-sky-600 dark:text-sky-200{% elif submission.status == submission.CANCELLED %}text-rose-600 dark:text-rose-200{% endif %}">
+                                            {{ submission.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4 text-slate-600 dark:text-slate-300">{{ submission.estimated_credit_value }}</td>
+                                    <td class="px-4 py-4">
+                                        <div class="flex flex-wrap gap-2">
+                                            {% if submission.status == submission.PENDING %}
+                                                <form method="post" action="{% url 'devices:submission_status' submission.pk %}" class="inline-flex">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="mark_received" />
+                                                    <button type="submit" class="secondary-btn px-4 py-2 text-xs font-semibold uppercase tracking-wide">
+                                                        <i class="fa-solid fa-inbox mr-2"></i>
+                                                        received
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'devices:submission_status' submission.pk %}" class="inline-flex">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="approve" />
+                                                    <button type="submit" class="primary-btn px-4 py-2 text-xs font-semibold uppercase tracking-wide">
+                                                        <i class="fa-solid fa-circle-check mr-2"></i>
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'devices:submission_status' submission.pk %}" class="inline-flex">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="cancel" />
+                                                    <button type="submit" class="ghost-btn px-4 py-2 text-xs font-semibold border uppercase tracking-wide text-rose-500 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200">
+                                                        <i class="fa-solid fa-ban mr-2"></i>
+                                                        Cancel
+                                                    </button>
+                                                </form>
+                                            {% elif submission.status == submission.RECEIVED %}
+                                                <form method="post" action="{% url 'devices:submission_status' submission.pk %}" class="inline-flex">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="approve" />
+                                                    <button type="submit" class="primary-btn px-4 py-2 text-xs font-semibold uppercase tracking-wide">
+                                                        <i class="fa-solid fa-circle-check mr-2"></i>
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'devices:submission_status' submission.pk %}" class="inline-flex">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="cancel" />
+                                                    <button type="submit" class="ghost-btn px-4 py-2 text-xs font-semibold uppercase tracking-wide text-rose-500 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200">
+                                                        <i class="fa-solid fa-ban mr-2"></i>
+                                                        Cancel
+                                                    </button>
+                                                </form>
+                                            {% elif submission.status == submission.CREDITED %}
+                                                <span class="chip-badge text-emerald-600 dark:text-emerald-200">
+                                                    <i class="fa-solid fa-gift mr-2"></i>
+                                                    Rewards granted
+                                                </span>
+                                            {% elif submission.status == submission.CANCELLED %}
+                                                <span class="chip-badge text-rose-600 dark:text-rose-200">
+                                                    <i class="fa-solid fa-ban mr-2"></i>
+                                                    Cancelled
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-500">
+                                        No submissions yet. Encourage residents to start recycling drives.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

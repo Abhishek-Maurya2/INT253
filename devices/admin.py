@@ -33,7 +33,9 @@ class DeviceSubmissionAdmin(admin.ModelAdmin):
 		"status",
 		"estimated_credit_value",
 		"submitted_at",
+		"catalog_entry_created",
+		"credits_awarded",
 	)
-	list_filter = ("status", "drop_off_facility")
+	list_filter = ("status", "drop_off_facility", "catalog_entry_created", "credits_awarded")
 	search_fields = ("custom_device_name", "device_model__model_name", "drop_off_facility__name")
 	autocomplete_fields = ("device_model", "drop_off_facility", "user")

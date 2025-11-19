@@ -101,12 +101,6 @@ class DeviceSubmissionFlowTests(TestCase):
 
 		profile = self.user.profile
 		previous_balance = profile.total_credits
-
-		profile.adjust_credits(
-			submission.estimated_credit_value,
-			reason="Submission credited",
-			source="automated-test",
-		)
 		submission.status = DeviceSubmission.CREDITED
 		submission.save(update_fields=["status"])
 
@@ -122,6 +116,65 @@ class DeviceSubmissionFlowTests(TestCase):
 		transactions = CreditTransaction.objects.filter(profile=profile)
 		self.assertEqual(transactions.count(), 1)
 		self.assertEqual(transactions.first().amount, submission.estimated_credit_value)
+		self.assertIn("Device submission credited", transactions.first().reason)
+		self.assertTrue(submission.credits_awarded)
+
+	def test_custom_submission_generates_catalog_entry_on_receipt(self):
+		self.client.login(username=self.user.username, password=self.password)
+		response = self.client.post(
+			reverse("devices:submit"),
+			data={
+				"device_model": "",
+				"device_category": self.category.pk,
+				"custom_device_name": "EcoTab 12",
+				"drop_off_facility": self.facility.pk,
+				"estimated_precious_metal_mass": "5.5",
+				"estimated_credit_value": "0",
+				"message_to_facility": "Tablet with cracked screen",
+				"agree_to_guidelines": "on",
+			},
+		)
+		self.assertEqual(response.status_code, 302)
+
+		submission = DeviceSubmission.objects.get(custom_device_name="EcoTab 12")
+		self.assertIsNone(submission.device_model)
+		self.assertFalse(submission.catalog_entry_created)
+
+		submission.status = DeviceSubmission.RECEIVED
+		submission.save(update_fields=["status"])
+
+		submission.refresh_from_db()
+		self.assertTrue(submission.catalog_entry_created)
+		self.assertIsNotNone(submission.device_model)
+		self.assertEqual(submission.device_model.category.name, submission.device_type)
+		self.assertEqual(submission.device_model.estimated_points, submission.estimated_credit_value)
+
+	def test_staff_can_approve_submission_from_dashboard_action(self):
+		response = self._submit_device()
+		submission = DeviceSubmission.objects.get(user=self.user)
+		self.assertEqual(submission.status, DeviceSubmission.PENDING)
+
+		logged_in = self.client.login(username=self.staff_user.username, password=self.password)
+		self.assertTrue(logged_in)
+
+		post_response = self.client.post(
+			reverse("devices:submission_status", args=[submission.pk]),
+			{"action": "approve"},
+			follow=True,
+		)
+		self.assertRedirects(post_response, reverse("accounts:admin_dashboard"))
+
+		submission.refresh_from_db()
+		self.assertEqual(submission.status, DeviceSubmission.CREDITED)
+		self.assertTrue(submission.credits_awarded)
+
+		profile = self.user.profile
+		profile.refresh_from_db()
+		self.assertEqual(profile.total_credits, submission.estimated_credit_value)
+
+		transactions = CreditTransaction.objects.filter(profile=profile)
+		self.assertEqual(transactions.count(), 1)
+		self.assertIn("Device submission credited", transactions.first().reason)
 
 	@patch("devices.views.estimate_device_metrics")
 	def test_ai_estimate_overrides_default_values(self, mock_estimate):
