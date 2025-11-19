@@ -2,35 +2,37 @@
 {% block title %}Your dashboard · E-Waste Navigator{% endblock %}
 
 {% block content %}
-<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 pb-20 pt-12 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-    <div class="mx-auto max-w-6xl px-6">
-        <header class="flex flex-col gap-6 pb-10 md:flex-row md:items-center md:justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Welcome back</p>
-                <h1 class="mt-2 font-display text-4xl font-semibold text-slate-900 dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</h1>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Review your latest recycling actions and discover nearby facilities.</p>
-            </div>
-            <div class="rounded-3xl border border-sky-200 bg-sky-50 px-6 py-4 text-sky-700 shadow-sm dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-200">
-                <p class="text-xs uppercase tracking-[0.2em]">Total credits</p>
-                <p class="mt-1 text-3xl font-semibold">{{ profile.total_credits }}</p>
+<section class="page-section">
+    <div class="layout-container space-y-12">
+        <header class="glass-card">
+            <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <span class="chip-badge"><i class="fa-solid fa-circle-user"></i>Personal impact</span>
+                    <h1 class="mt-4 text-3xl font-semibold text-slate-900 dark:text-white">{{ request.user.get_full_name|default:request.user.username }}</h1>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Review your latest submissions, find trusted partners nearby, and track learning opportunities.</p>
+                </div>
+                <div class="rounded-3xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-700 shadow-inner dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200">
+                    <p class="text-xs uppercase tracking-[0.35em]">Total credits</p>
+                    <p class="mt-2 font-display text-4xl font-semibold">{{ profile.total_credits }}</p>
+                </div>
             </div>
         </header>
 
-        <div class="grid gap-8 lg:grid-cols-3">
-            <section class="lg:col-span-2">
+        <div class="dashboard-grid">
+            <section class="lg:col-span-2 space-y-6">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Recent submissions</h2>
-                    <a href="{% url 'devices:submit' %}" class="text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
-                        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                        Submit another device
+                    <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Recent submissions</h2>
+                    <a href="{% url 'devices:submit' %}" class="secondary-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Submit device
                     </a>
                 </div>
-                <div class="mt-4 space-y-4">
+                <div class="space-y-4">
                     {% for submission in submissions %}
-                        <article class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70">
-                            <div class="flex items-center justify-between">
+                        <article class="grid-card">
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <h3 class="text-base font-semibold text-slate-900 dark:text-white">{{ submission.display_name }}</h3>
-                                <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                                <span class="chip-badge">
                                     <i class="fa-solid fa-circle {% if submission.status == 'credited' %}text-emerald-400{% elif submission.status == 'pending' %}text-amber-400{% else %}text-slate-400{% endif %}"></i>
                                     {{ submission.get_status_display }}
                                 </span>
@@ -43,54 +45,57 @@
                             </p>
                         </article>
                     {% empty %}
-                        <div class="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-8 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-400">
-                            No submissions yet. <a href="{% url 'devices:submit' %}" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Start your first recycling claim.</a>
+                        <div class="glass-card text-center text-sm text-slate-500 dark:text-slate-400">
+                            No submissions yet. <a href="{% url 'devices:submit' %}" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Start your first recycling claim.</a>
                         </div>
                     {% endfor %}
                 </div>
             </section>
-            <aside class="space-y-8">
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Nearby facilities</h3>
+
+            <aside class="space-y-6">
+                <div class="glass-card">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Nearby facilities</h3>
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for facility in facilities %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-location-dot mr-2 text-xs text-sky-500"></i>{{ facility.name }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-map mr-2"></i>{{ facility.city }}, {{ facility.state }}</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-location-dot mr-2 text-sky-500"></i>{{ facility.name }}</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-map mr-2"></i>{{ facility.city }}, {{ facility.state }}</p>
                             </li>
                         {% empty %}
                             <li>No facilities yet—check back soon.</li>
                         {% endfor %}
                     </ul>
-                    <a href="{% url 'facilities:facility_list' %}" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                    <a href="{% url 'facilities:facility_list' %}" class="mt-4 inline-flex items-center text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
                         View full directory
-                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                        <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
                     </a>
                 </div>
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Learn and earn</h3>
+
+                <div class="glass-card">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Learn & earn</h3>
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for module in modules %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-graduation-cap mr-2 text-xs text-emerald-500"></i>{{ module.title }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-book mr-2"></i>{{ module.subtitle }}</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-graduation-cap mr-2 text-emerald-500"></i>{{ module.title }}</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-book mr-2"></i>{{ module.subtitle }}</p>
                             </li>
                         {% empty %}
                             <li>Stay tuned—new learning drops coming soon.</li>
                         {% endfor %}
                     </ul>
-                    <a href="{% url 'facilities:home' %}#education" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                    <a href="{% url 'facilities:home' %}#education" class="mt-4 inline-flex items-center text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
                         Explore all modules
-                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                        <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
                     </a>
                 </div>
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Rewards</h3>
+
+                <div class="glass-card">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Rewards</h3>
                     <ul class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         {% for reward in rewards %}
                             <li>
-                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-gift mr-2 text-xs text-amber-500"></i>{{ reward.name }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-coins mr-2"></i>Requires {{ reward.points_required }} credits</p>
+                                <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-gift mr-2 text-amber-500"></i>{{ reward.name }}</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-500"><i class="fa-solid fa-coins mr-2"></i>Requires {{ reward.points_required }} credits</p>
                             </li>
                         {% empty %}
                             <li>Rewards catalog coming soon.</li>

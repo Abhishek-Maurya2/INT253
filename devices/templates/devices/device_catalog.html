@@ -3,89 +3,101 @@
 {% block title %}Device Library · E-Waste Navigator{% endblock %}
 
 {% block content %}
-<section class="bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
-    <div class="mx-auto max-w-6xl px-6 py-12">
-        <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-                <h1 class="text-3xl font-semibold text-slate-900 transition-colors dark:text-white">Device library</h1>
-                <p class="mt-2 text-sm text-slate-600 transition-colors dark:text-slate-400">Explore pre-mapped electronics with hazardous component insights and estimated reward values.</p>
+<section class="page-section">
+    <div class="layout-container space-y-12">
+        <header class="glass-card">
+            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <span class="chip-badge"><i class="fa-solid fa-tablet-screen-button"></i>Device insights</span>
+                    <h1 class="mt-4 text-3xl font-semibold text-slate-900 dark:text-white">Device library</h1>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Explore mapped electronics with hazardous components, material recovery notes, and estimated credits.</p>
+                </div>
+                <form method="get" class="flex flex-wrap items-center gap-3">
+                    <label class="input-shell w-full sm:w-64" for="device-search">
+                        <span class="input-shell__icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input id="device-search" type="search" name="q" value="{{ request.GET.q }}" placeholder="Search by model name" class="form-field pl-10 pr-4">
+                    </label>
+                    <label class="input-shell w-full sm:w-56" for="device-category">
+                        <span class="input-shell__icon"><i class="fa-solid fa-layer-group"></i></span>
+                        <span class="input-shell__chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                        <select id="device-category" name="category" class="form-field appearance-none pl-10 pr-10">
+                            <option value="">All categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <button type="submit" class="primary-btn">
+                        <i class="fa-solid fa-filter"></i>
+                        Filter
+                    </button>
+                </form>
             </div>
-            <form method="get" class="flex flex-wrap items-center gap-3">
-                <label class="relative" for="device-search">
-                    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                    <input id="device-search" type="search" name="q" value="{{ request.GET.q }}" placeholder="Search by model name" class="w-64 rounded-xl border border-slate-300 bg-white pl-12 pr-4 py-2 text-sm text-slate-700 placeholder-slate-400 transition focus:border-sky-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder-slate-500">
-                </label>
-                <label class="relative" for="device-category">
-                    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </span>
-                    <select id="device-category" name="category" class="rounded-xl border border-slate-300 bg-white pl-12 pr-10 py-2 text-sm text-slate-700 transition focus:border-sky-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100">
-                        <option value="">All categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 dark:text-slate-950">
-                    <i class="fa-solid fa-filter"></i>
-                    Filter
-                </button>
-            </form>
         </header>
 
-        <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {% for device in devices %}
-                <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900/60">
+                <article class="grid-card h-full">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-500 transition-colors dark:text-slate-500">{{ device.category.name }}</p>
-                            <h2 class="mt-1 text-xl font-semibold text-slate-900 transition-colors dark:text-white">{{ device.manufacturer }} {{ device.model_name }}</h2>
+                            <p class="card-meta text-[11px] text-slate-500 dark:text-slate-500">{{ device.category.name }}</p>
+                            <h2 class="mt-2 text-xl font-semibold text-slate-900 dark:text-white">{{ device.manufacturer }} {{ device.model_name }}</h2>
                         </div>
                         {% if device.image_url %}
-                            <img src="{{ device.image_url }}" alt="{{ device }}" class="h-16 w-16 rounded-lg border border-slate-200 object-cover transition-colors dark:border-slate-800">
+                            <img src="{{ device.image_url }}" alt="{{ device }}" class="h-16 w-16 rounded-2xl border border-slate-200/70 object-cover dark:border-slate-800/60">
                         {% endif %}
                     </div>
-                    <p class="mt-4 text-sm text-slate-600 line-clamp-4 transition-colors dark:text-slate-400">{{ device.description|default:"No description yet." }}</p>
-                    <dl class="mt-4 space-y-2 text-sm text-slate-500 transition-colors dark:text-slate-300">
+                    <p class="mt-4 text-sm text-slate-600 line-clamp-4 dark:text-slate-400">{{ device.description|default:"No description yet." }}</p>
+                    <dl class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
                         <div class="flex items-center justify-between">
-                            <dt>Estimated credits</dt>
-                            <dd class="font-semibold text-sky-700 transition-colors dark:text-sky-200">{{ device.estimated_points }}</dd>
+                            <dt><i class="fa-solid fa-coins mr-2 text-amber-500"></i>Estimated credits</dt>
+                            <dd class="font-semibold text-sky-600 dark:text-sky-200">{{ device.estimated_points }}</dd>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <dt>Key hazards</dt>
-                            <dd>
+                        <div>
+                            <dt class="flex items-center gap-2"><i class="fa-solid fa-radiation text-rose-500"></i>Key hazards</dt>
+                            <dd class="mt-2">
                                 <ul class="flex flex-wrap gap-2">
                                     {% for component in device.components.all|slice:":3" %}
-                                        <li class="rounded-full border border-sky-400/40 bg-sky-100 px-3 py-1 text-xs text-sky-700 transition-colors dark:bg-sky-500/10 dark:text-sky-200">{{ component.name }}</li>
+                                        <li class="chip-badge text-[11px] text-sky-600 dark:text-sky-200"><i class="fa-solid fa-circle"></i>{{ component.name }}</li>
                                     {% empty %}
-                                        <li class="text-xs text-slate-500 transition-colors dark:text-slate-500">Add component mapping</li>
+                                        <li class="text-xs text-slate-500 dark:text-slate-500">Add component mapping</li>
                                     {% endfor %}
                                 </ul>
                             </dd>
                         </div>
                     </dl>
-                    <div class="mt-6 flex gap-3">
-                        <a href="{% url 'devices:detail' device.slug %}" class="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:text-sky-200">View insights</a>
-                        <a href="{% url 'devices:submit' %}?device={{ device.slug }}" class="inline-flex flex-1 items-center justify-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 dark:text-slate-950">Submit</a>
+                    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <a href="{% url 'devices:detail' device.slug %}" class="secondary-btn flex-1 justify-center">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            View insights
+                        </a>
+                        <a href="{% url 'devices:submit' %}?device={{ device.slug }}" class="primary-btn flex-1 justify-center">
+                            <i class="fa-solid fa-recycle"></i>
+                            Submit
+                        </a>
                     </div>
                 </article>
             {% empty %}
-                <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-slate-200 bg-white/90 p-12 text-center text-sm text-slate-500 transition-colors dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
+                <div class="glass-card text-center text-sm text-slate-500 dark:text-slate-400 md:col-span-2 xl:col-span-3">
                     No device records yet. Start by mapping common electronics in the admin dashboard.
                 </div>
             {% endfor %}
         </div>
 
         {% if is_paginated %}
-            <nav class="mt-12 flex items-center justify-center gap-2 text-sm text-slate-500 transition-colors dark:text-slate-300">
+            <nav class="flex items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}" class="rounded-full border border-slate-300 px-3 py-1 transition hover:border-sky-400 dark:border-slate-700">Previous</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="secondary-btn">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Previous
+                    </a>
                 {% endif %}
-                <span class="rounded-full border border-slate-300 px-3 py-1 transition dark:border-slate-700">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+                <span class="chip-badge text-slate-600 dark:text-slate-300">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" class="rounded-full border border-slate-300 px-3 py-1 transition hover:border-sky-400 dark:border-slate-700">Next</a>
+                    <a href="?page={{ page_obj.next_page_number }}" class="secondary-btn">
+                        Next
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
                 {% endif %}
             </nav>
         {% endif %}

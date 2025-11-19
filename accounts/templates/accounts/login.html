@@ -3,75 +3,81 @@
 {% block title %}Sign in · E-Waste Navigator{% endblock %}
 
 {% block content %}
-<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 py-16 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-    <div class="mx-auto grid max-w-5xl gap-12 px-6 lg:grid-cols-2">
-        <div class="flex flex-col justify-center space-y-6">
-            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                <i class="fa-solid fa-map-location-dot text-xs"></i>
-                Access your impact hub
-            </span>
-            <h1 class="font-display text-4xl font-semibold text-slate-900 dark:text-white">Welcome back</h1>
-            <p class="text-base text-slate-600 dark:text-slate-400">Track recycling submissions, unlock rewards, and manage facilities in one place.</p>
-            <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-500">
-                <li class="flex items-start gap-3">
-                    <i class="fa-solid fa-circle-check mt-1 text-sky-500"></i>
-                    Instant access to your recent submissions and credits
+<section class="page-section">
+    <div class="layout-container grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+        <div class="space-y-8">
+            <span class="feature-chip"><i class="fa-solid fa-map-location-dot"></i>Impact hub</span>
+            <h1 class="page-section__title text-4xl sm:text-5xl">Welcome back, steward.</h1>
+            <p class="page-section__subtitle">Track credit earnings, manage facility data, and tap into learning drops tailored to your role.</p>
+            <ul class="grid gap-4 text-sm text-slate-600 sm:grid-cols-2 dark:text-slate-400">
+                <li class="subtle-card">
+                    <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-circle-check mr-2 text-emerald-500"></i>Instant device insights</p>
+                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Review AI-powered estimates and facility confirmations in one place.</p>
                 </li>
-                <li class="flex items-start gap-3">
-                    <i class="fa-solid fa-circle-check mt-1 text-sky-500"></i>
-                    Admins can maintain facility data directly from the dashboard
+                <li class="subtle-card">
+                    <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-circle-check mr-2 text-emerald-500"></i>Admin-grade controls</p>
+                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Quickly seed facilities, update catalogs, and moderate submissions.</p>
                 </li>
-                <li class="flex items-start gap-3">
-                    <i class="fa-solid fa-circle-check mt-1 text-sky-500"></i>
-                    Stay informed with curated learning modules
+                <li class="subtle-card sm:col-span-2">
+                    <p class="font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-circle-check mr-2 text-emerald-500"></i>Learning pulses</p>
+                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Unlock curated modules that help communities recycle responsibly.</p>
                 </li>
             </ul>
         </div>
-        <div class="rounded-3xl border border-slate-200 bg-white/90 p-10 shadow-xl dark:border-slate-800 dark:bg-slate-900/80">
-            <form method="post" class="space-y-6">
+        <div class="glass-card">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">Sign in to continue</h2>
+                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Secure login with theme-aware UI and micro interactions.</p>
+                </div>
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/15 text-sky-600 dark:text-sky-300">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </span>
+            </div>
+            <form method="post" class="mt-8 space-y-6">
                 {% csrf_token %}
                 {% if next %}
                     <input type="hidden" name="next" value="{{ next }}">
                 {% endif %}
-                <div class="space-y-2">
-                    <label for="id_username" class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                <div>
+                    <label for="id_username" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-200">
                         <i class="fa-solid fa-user"></i>
                         Username
                     </label>
-                    <div class="relative">
-                        <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"><i class="fa-solid fa-user"></i></span>
+                    <div class="input-shell mt-2">
+                        <span class="input-shell__icon"><i class="fa-solid fa-circle-user"></i></span>
                         {{ form.username }}
                     </div>
                     {% if form.username.errors %}
-                        <p class="text-xs text-rose-500">{{ form.username.errors|striptags }}</p>
+                        <p class="mt-2 text-xs text-rose-500">{{ form.username.errors|striptags }}</p>
                     {% endif %}
                 </div>
-                <div class="space-y-2">
-                    <label for="id_password" class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                <div>
+                    <label for="id_password" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-200">
                         <i class="fa-solid fa-key"></i>
                         Password
                     </label>
-                    <div class="relative">
-                        <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"><i class="fa-solid fa-lock"></i></span>
+                    <div class="input-shell mt-2">
+                        <span class="input-shell__icon"><i class="fa-solid fa-lock"></i></span>
                         {{ form.password }}
                     </div>
                     {% if form.password.errors %}
-                        <p class="text-xs text-rose-500">{{ form.password.errors|striptags }}</p>
+                        <p class="mt-2 text-xs text-rose-500">{{ form.password.errors|striptags }}</p>
                     {% endif %}
                 </div>
                 {% if form.non_field_errors %}
-                    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:border-rose-600/40 dark:bg-rose-900/40 dark:text-rose-200">
+                    <div class="rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:border-rose-500/30 dark:bg-rose-900/30 dark:text-rose-200">
                         {{ form.non_field_errors|striptags }}
                     </div>
                 {% endif %}
-                <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-500 dark:text-slate-950">
-                    <i class="fa-solid fa-right-to-bracket text-sm"></i>
+                <button type="submit" class="primary-btn w-full justify-center">
+                    <i class="fa-solid fa-right-to-bracket"></i>
                     Sign in
                 </button>
             </form>
-            <p class="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+            <p class="mt-8 text-center text-sm text-slate-600 dark:text-slate-400">
                 New to the platform?
-                <a href="{% url 'accounts:register' %}" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Create an account</a>
+                <a href="{% url 'accounts:register' %}" class="font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">Create an account</a>
             </p>
         </div>
     </div>

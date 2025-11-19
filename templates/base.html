@@ -1,171 +1,375 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
     <title>{% block title %}E-Waste Facility Locator{% endblock %}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"  />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <script>
-        (function () {
-            try {
-                const storageKey = 'ewaste-theme';
-                const stored = localStorage.getItem(storageKey);
-                const supportsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (stored === 'dark' || (!stored && supportsDark)) {
-                    document.documentElement.classList.add('dark');
-                }
-            } catch (error) {
-                console.warn('Theme preference unavailable', error);
-            }
-        })();
+      (function () {
+        try {
+          const storageKey = "ewaste-theme";
+          const stored = localStorage.getItem(storageKey);
+          const supportsDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          if (stored === "dark" || (!stored && supportsDark)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (error) {
+          console.warn("Theme preference unavailable", error);
+        }
+      })();
     </script>
     {% tailwind_css %}
-</head>
-<body class="bg-slate-50 font-sans text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
-    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900/70">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <a href="{% url 'facilities:home' %}" class="flex items-center gap-2 text-sky-600 transition hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
-                <span class="text-2xl"><i class="fa-solid fa-recycle"></i></span>
-                <span class="font-display text-xl font-semibold tracking-wide">E-Waste Navigator</span>
+  </head>
+  <body
+    class="relative min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-900 transition-colors duration-300 selection:bg-sky-200/70 dark:bg-slate-950 dark:text-slate-100 dark:selection:bg-sky-500/30"
+  >
+    <div class="background-rings"></div>
+    <span
+      class="ambient-orb top-[-120px] left-[-120px] h-[480px] w-[480px]"
+    ></span>
+    <span
+      class="ambient-orb animate-float-delay bottom-[-160px] right-[-80px] h-[420px] w-[420px]"
+    ></span>
+
+    <header
+      class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/70 backdrop-blur-xl transition-colors duration-300 dark:border-slate-800/60 dark:bg-slate-950/60"
+    >
+      <div class="layout-container flex items-center justify-between py-4">
+        <a
+          href="{% url 'facilities:home' %}"
+          class="group inline-flex items-center gap-3 text-sky-600 transition duration-200 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200"
+        >
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500/15 text-lg shadow-inner shadow-sky-400/10 transition group-hover:scale-105 dark:bg-sky-500/15 dark:shadow-sky-500/20"
+          >
+            <i class="fa-solid fa-recycle"></i>
+          </span>
+          <span class="font-display text-xl font-semibold tracking-tight"
+            >E-Waste Navigator</span
+          >
+        </a>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/70 text-slate-500 transition md:hidden dark:border-slate-700/70 dark:text-slate-300"
+            data-mobile-nav-toggle
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <nav
+            id="primary-navigation"
+            class="hidden items-center gap-1 md:flex"
+          >
+            {% with current_path=request.path %}
+            <a
+              href="{% url 'facilities:facility_list' %}"
+              class="nav-link {% if '/facilities' in current_path and current_path != '/' %}is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-location-dot"></i>
+              <span>Facilities</span>
             </a>
-            <nav class="flex items-center gap-2 text-sm font-medium">
-                <a href="{% url 'facilities:facility_list' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <i class="fa-solid fa-location-dot text-sm"></i>
-                    <span>Find Facilities</span>
-                </a>
-                <a href="{% url 'devices:catalog' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <i class="fa-solid fa-tablet-screen-button text-sm"></i>
-                    <span>Device Library</span>
-                </a>
-                <a href="{% url 'devices:submit' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <i class="fa-solid fa-plus text-sm"></i>
-                    <span>Submit Device</span>
-                </a>
-                {% if request.user.is_authenticated %}
-                    {% if request.user.is_staff %}
-                        <a href="{% url 'accounts:admin_dashboard' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    {% else %}
-                        <a href="{% url 'accounts:user_dashboard' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    {% endif %}
-                        <i class="fa-solid fa-circle-user text-sm"></i>
-                        <span>{% if request.user.is_staff %}Admin{% else %}Dashboard{% endif %}</span>
-                        </a>
-                    <form method="post" action="{% url 'accounts:logout' %}" class="inline-flex">
-                        {% csrf_token %}
-                        <button type="submit" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-500 dark:text-slate-300 dark:hover:bg-rose-500/10 dark:hover:text-rose-200">
-                            <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
-                            <span>Sign out</span>
-                        </button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'accounts:login' %}" class="inline-flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-sky-600 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                        <i class="fa-solid fa-arrow-right-to-bracket text-sm"></i>
-                        <span>Sign in</span>
-                    </a>
-                    <a href="{% url 'accounts:register' %}" class="inline-flex items-center gap-2 rounded-full border border-sky-200 px-3 py-2 text-sky-600 transition hover:bg-sky-50 hover:text-sky-500 dark:border-sky-500/60 dark:text-sky-300 dark:hover:bg-sky-500/10 dark:hover:text-sky-200">
-                        <i class="fa-solid fa-user-plus text-sm"></i>
-                        <span>Join</span>
-                    </a>
-                {% endif %}
-                <button type="button" data-theme-toggle aria-pressed="false" class="rounded-full border border-slate-200 text-slate-600 transition hover:border-sky-400 hover:bg-slate-100 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:bg-slate-800/60 dark:hover:text-sky-200">
-                    <span class="sr-only">Toggle theme</span>
-                    <i class="theme-icon-sun fa-solid fa-sun text-sm"></i>
-                    <i class="theme-icon-moon fa-solid fa-moon hidden text-sm"></i>
-                 
+            <a
+              href="{% url 'devices:catalog' %}"
+              class="nav-link{% if '/devices/catalog' in current_path or '/devices/' in current_path %} is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-tablet-screen-button"></i>
+              <span>Device Library</span>
+            </a>
+            <a
+              href="{% url 'devices:submit' %}"
+              class="nav-link {% if '/devices/submit' in current_path %}is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-wand-magic-sparkles"></i>
+              <span>Submit Device</span>
+            </a>
+            {% if request.user.is_authenticated %}
+              {% if request.user.is_staff %}
+              <a
+                href="{% url 'accounts:admin_dashboard' %}"
+                class="nav-link {% if '/accounts/admin' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-gauge-high"></i>
+                <span>Admin</span>
+              </a>
+              {% else %}
+              <a
+                href="{% url 'accounts:user_dashboard' %}"
+                class="nav-link {% if '/accounts/dashboard' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-circle-user"></i>
+                <span>Dashboard</span>
+              </a>
+              {% endif %}
+              <form
+                method="post"
+                action="{% url 'accounts:logout' %}"
+                class="inline-flex"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="ghost-btn text-rose-500 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200"
+                >
+                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                  <span>Sign out</span>
                 </button>
-            </nav>
+              </form>
+            {% else %}
+              <a
+                href="{% url 'accounts:login' %}"
+                class="nav-link {% if '/accounts/login' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-right-to-bracket"></i>
+                <span>Sign in</span>
+              </a>
+              <a
+                href="{% url 'accounts:register' %}"
+                class="primary-btn primary-btn--subtle"
+              >
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Join</span>
+              </a>
+            {% endif %}
+            {% endwith %}
+          </nav>
+          <button
+            type="button"
+            data-theme-toggle
+            aria-pressed="false"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/70 text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700/70 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:text-sky-200"
+          >
+            <span class="sr-only">Toggle theme</span>
+            <i class="theme-icon-sun fa-solid fa-sun text-base"></i>
+            <i class="theme-icon-moon fa-solid fa-moon hidden text-base"></i>
+          </button>
         </div>
+      </div>
+      <nav id="mobile-navigation" class="md:hidden">
+        <div class="layout-container pb-4">
+          <div
+            class="hidden flex-col gap-3 rounded-3xl border border-slate-200/70 bg-white/90 p-4 shadow-lg shadow-slate-200/40 backdrop-blur-sm transition dark:border-slate-800/60 dark:bg-slate-900/80 dark:shadow-slate-900/50"
+            data-mobile-nav-panel
+          >
+            {% with current_path=request.path %}
+            <a
+              href="{% url 'facilities:facility_list' %}"
+              class="nav-link {% if '/facilities' in current_path and current_path != '/' %}is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-location-dot"></i>
+              <span>Facilities</span>
+            </a>
+            <a
+              href="{% url 'devices:catalog' %}"
+              class="nav-link{% if '/devices/catalog' in current_path or '/devices/' in current_path %} is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-tablet-screen-button"></i>
+              <span>Device Library</span>
+            </a>
+            <a
+              href="{% url 'devices:submit' %}"
+              class="nav-link {% if '/devices/submit' in current_path %}is-active{% endif %}"
+            >
+              <i class="nav-link__icon fa-solid fa-wand-magic-sparkles"></i>
+              <span>Submit Device</span>
+            </a>
+            {% if request.user.is_authenticated %}
+              {% if request.user.is_staff %}
+              <a
+                href="{% url 'accounts:admin_dashboard' %}"
+                class="nav-link {% if '/accounts/admin' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-gauge-high"></i>
+                <span>Admin</span>
+              </a>
+              {% else %}
+              <a
+                href="{% url 'accounts:user_dashboard' %}"
+                class="nav-link {% if '/accounts/dashboard' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-circle-user"></i>
+                <span>Dashboard</span>
+              </a>
+              {% endif %}
+              <form
+                method="post"
+                action="{% url 'accounts:logout' %}"
+                class="inline-flex"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="ghost-btn text-rose-500 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200"
+                >
+                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                  <span>Sign out</span>
+                </button>
+              </form>
+            {% else %}
+              <a
+                href="{% url 'accounts:login' %}"
+                class="nav-link {% if '/accounts/login' in current_path %}is-active{% endif %}"
+              >
+                <i class="nav-link__icon fa-solid fa-right-to-bracket"></i>
+                <span>Sign in</span>
+              </a>
+              <a
+                href="{% url 'accounts:register' %}"
+                class="primary-btn primary-btn--subtle"
+              >
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Join</span>
+              </a>
+            {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+      </nav>
     </header>
 
     {% if messages %}
-        <div class="mx-auto max-w-4xl px-6 pt-6">
-            <div class="space-y-3">
-                {% for message in messages %}
-                    <div class="rounded-lg border border-sky-400/40 bg-sky-100 px-4 py-3 text-sm text-sky-900 dark:bg-sky-500/10 dark:text-sky-100">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
+    <div class="layout-container pt-6">
+      <div class="space-y-3">
+        {% for message in messages %}
+        <div
+          class="glass-card py-4 text-sm font-medium text-sky-900 shadow-lg shadow-sky-200/40 dark:text-sky-200 dark:shadow-sky-900/30"
+        >
+          <i class="fa-solid fa-circle-info mr-2 text-sky-500"></i>
+          {{ message }}
         </div>
+        {% endfor %}
+      </div>
+    </div>
     {% endif %}
 
-    <main class="min-h-screen">
-        {% block content %}{% endblock %}
+    <main class="relative z-10 min-h-screen pb-24 pt-8">
+      {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-slate-200 bg-white/90 transition-colors duration-300 dark:border-slate-900 dark:bg-slate-950/80">
-        <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-slate-500 transition-colors duration-300 md:flex-row md:items-center md:justify-between dark:text-slate-400">
-            <p class="flex items-center gap-2">
-                <i class="fa-solid fa-shield-heart text-sm"></i>
-                <span>&copy; {% now 'Y' %} E-Waste Navigator. All rights reserved.</span>
-            </p>
-            <div class="flex gap-4">
-                <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <i class="fa-solid fa-user-shield text-sm"></i>
-                    <span>Privacy</span>
-                </a>
-                <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <i class="fa-solid fa-comments text-sm"></i>
-                    <span>Support</span>
-                </a>
-                <a href="#" class="inline-flex items-center gap-2 hover:text-slate-700 transition dark:hover:text-slate-200">
-                    <i class="fa-solid fa-book-open text-sm"></i>
-                    <span>Educate</span>
-                </a>
-            </div>
+    <footer
+      class="relative border-t border-slate-200/70 bg-white/80 py-12 backdrop-blur-sm transition-colors duration-300 dark:border-slate-800/60 dark:bg-slate-950/70"
+    >
+      <div
+        class="layout-container flex flex-col gap-10 md:flex-row md:items-center md:justify-between"
+      >
+        <div class="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+          <p class="font-semibold text-slate-600 dark:text-slate-200">
+            E-Waste Navigator
+          </p>
+          <p>&copy; {% now 'Y' %} Responsible recycling starts here.</p>
         </div>
+        <div
+          class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400"
+        >
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 hover:text-slate-800 dark:hover:text-slate-100"
+          >
+            <i class="fa-solid fa-user-shield text-sm"></i>
+            Privacy
+          </a>
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 hover:text-slate-800 dark:hover:text-slate-100"
+          >
+            <i class="fa-solid fa-headset text-sm"></i>
+            Support
+          </a>
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 hover:text-slate-800 dark:hover:text-slate-100"
+          >
+            <i class="fa-solid fa-book-open-reader text-sm"></i>
+            Education
+          </a>
+        </div>
+      </div>
     </footer>
+
     <script>
-        (function () {
-            const storageKey = 'ewaste-theme';
-            const root = document.documentElement;
+      (function () {
+        const storageKey = "ewaste-theme";
+        const root = document.documentElement;
+        const navToggle = document.querySelector("[data-mobile-nav-toggle]");
+        const navPanel = document.querySelector("[data-mobile-nav-panel]");
 
-            const initializeThemeToggle = () => {
-                const toggle = document.querySelector('[data-theme-toggle]');
-                if (!toggle) {
-                    return;
-                }
+        const initializeThemeToggle = () => {
+          const toggle = document.querySelector("[data-theme-toggle]");
+          if (!toggle) {
+            return;
+          }
 
-                const sunIcon = toggle.querySelector('.theme-icon-sun');
-                const moonIcon = toggle.querySelector('.theme-icon-moon');
-                const label = toggle.querySelector('.theme-toggle-label');
+          const sunIcon = toggle.querySelector(".theme-icon-sun");
+          const moonIcon = toggle.querySelector(".theme-icon-moon");
 
-                const syncState = () => {
-                    const isDark = root.classList.contains('dark');
-                    toggle.setAttribute('aria-pressed', String(isDark));
-                    
-                    if (sunIcon && moonIcon) {
-                        sunIcon.classList.toggle('hidden', isDark);
-                        moonIcon.classList.toggle('hidden', !isDark);
-                    }
-                };
-
-                syncState();
-
-                toggle.addEventListener('click', () => {
-                    const isDark = root.classList.toggle('dark');
-                    try {
-                        localStorage.setItem(storageKey, isDark ? 'dark' : 'light');
-                    } catch (error) {
-                        console.warn('Unable to persist theme preference', error);
-                    }
-                    syncState();
-                });
-            };
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initializeThemeToggle, { once: true });
-            } else {
-                initializeThemeToggle();
+          const syncState = () => {
+            const isDark = root.classList.contains("dark");
+            toggle.setAttribute("aria-pressed", String(isDark));
+            if (sunIcon && moonIcon) {
+              sunIcon.classList.toggle("hidden", isDark);
+              moonIcon.classList.toggle("hidden", !isDark);
             }
-        })();
+          };
+
+          syncState();
+
+          toggle.addEventListener("click", () => {
+            const isDark = root.classList.toggle("dark");
+            try {
+              localStorage.setItem(storageKey, isDark ? "dark" : "light");
+            } catch (error) {
+              console.warn("Unable to persist theme preference", error);
+            }
+            syncState();
+          });
+        };
+
+        const initializeMobileNav = () => {
+          if (!navToggle || !navPanel) {
+            return;
+          }
+
+          navToggle.addEventListener("click", () => {
+            const expanded = navToggle.getAttribute("aria-expanded") === "true";
+            navToggle.setAttribute("aria-expanded", String(!expanded));
+            navPanel.classList.toggle("hidden", expanded);
+            navPanel.classList.toggle("animate-fade-in", !expanded);
+          });
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+              initializeThemeToggle();
+              initializeMobileNav();
+            },
+            { once: true }
+          );
+        } else {
+          initializeThemeToggle();
+          initializeMobileNav();
+        }
+      })();
     </script>
     {% if debug and request.GET.browser_reload == 'on' %}
-        <script src="{% url 'django_browser_reload:events' %}" defer></script>
+    <script src="{% url 'django_browser_reload:events' %}" defer></script>
     {% endif %}
-</body>
+  </body>
 </html>

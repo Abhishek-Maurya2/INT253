@@ -2,85 +2,93 @@
 {% block title %}Admin dashboard · E-Waste Navigator{% endblock %}
 
 {% block content %}
-<section class="bg-gradient-to-b from-white via-slate-50 to-slate-100 pb-20 pt-12 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-    <div class="mx-auto max-w-6xl px-6">
-        <header class="flex flex-col gap-6 pb-10 md:flex-row md:items-center md:justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-gauge-high mr-2"></i>Admin control panel</p>
-                <h1 class="mt-2 font-display text-4xl font-semibold text-slate-900 dark:text-white">Hello, {{ request.user.get_full_name|default:request.user.username }}</h1>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Manage the datasets that power the recycling experience.</p>
-            </div>
-            <div class="flex gap-4">
-                <a href="{% url 'admin:index' %}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:text-sky-200">
+<section class="page-section">
+    <div class="layout-container space-y-14">
+        <header class="glass-card">
+            <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <span class="chip-badge"><i class="fa-solid fa-gauge-high"></i>Admin control</span>
+                    <h1 class="mt-4 text-3xl font-semibold text-slate-900 dark:text-white">
+                        Hello, {{ request.user.get_full_name|default:request.user.username }}
+                    </h1>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Shape the datasets that power responsible recycling experiences.</p>
+                </div>
+                <a href="{% url 'admin:index' %}" class="primary-btn">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
-                    Go to Django admin
+                    Open Django admin
                 </a>
             </div>
         </header>
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500"><i class="fa-solid fa-industry mr-2"></i>Facilities</p>
-                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ facility_total }}</p>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Active drop-off locations</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500"><i class="fa-solid fa-microchip mr-2"></i>Device models</p>
-                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ device_total }}</p>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Catalogued devices</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500"><i class="fa-solid fa-recycle mr-2"></i>Submissions</p>
-                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ submission_total }}</p>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Total recycling intents</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500"><i class="fa-solid fa-gift mr-2"></i>Rewards</p>
-                <p class="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{{ reward_total }}</p>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Incentives available</p>
-            </div>
+            <article class="stat-card">
+                <p class="stat-label"><i class="fa-solid fa-industry mr-2"></i>Facilities</p>
+                <p class="stat-value">{{ facility_total }}</p>
+                <p class="card-body mt-3">Active drop-off locations in network.</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label"><i class="fa-solid fa-microchip mr-2"></i>Device models</p>
+                <p class="stat-value">{{ device_total }}</p>
+                <p class="card-body mt-3">Catalogued electronics with insights.</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label"><i class="fa-solid fa-recycle mr-2"></i>Submissions</p>
+                <p class="stat-value">{{ submission_total }}</p>
+                <p class="card-body mt-3">Total recycling intents logged.</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label"><i class="fa-solid fa-gift mr-2"></i>Rewards</p>
+                <p class="stat-value">{{ reward_total }}</p>
+                <p class="card-body mt-3">Credits available for community perks.</p>
+            </article>
         </section>
 
-        <section class="mt-12 grid gap-8 lg:grid-cols-3">
-            <div class="lg:col-span-2 space-y-6">
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Primary actions</h2>
+        <section class="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+            <div class="space-y-6">
+                <div class="glass-card">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Primary actions</h2>
+                        <span class="chip-badge"><i class="fa-solid fa-bolt"></i>High impact</span>
+                    </div>
                     <div class="mt-6 grid gap-6 md:grid-cols-2">
                         {% for action in actions %}
-                            <a href="{{ action.href }}" class="group rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-400 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900/60">
-                                <h3 class="text-base font-semibold text-slate-900 transition group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-300"><i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>{{ action.title }}</h3>
-                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ action.description }}</p>
-                                <span class="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500 transition group-hover:text-sky-600 dark:text-slate-500 dark:group-hover:text-sky-300">
+                            <a href="{{ action.href }}" class="grid-card">
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>{{ action.title }}
+                                </h3>
+                                <p class="card-body mt-3">{{ action.description }}</p>
+                                <span class="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-500">
                                     Manage
-                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
                                 </span>
                             </a>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="space-y-6">
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+            <aside class="space-y-6">
+                <div class="glass-card">
                     <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Quick add</h2>
                     <ul class="mt-4 space-y-3">
                         {% for item in quick_add %}
                             <li>
-                                <a href="{{ item.href }}" class="inline-flex w-full items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:text-sky-200">
+                                <a href="{{ item.href }}" class="secondary-btn w-full justify-between">
                                     <span><i class="fa-solid fa-plus mr-2"></i>{{ item.label }}</span>
-                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <div class="subtle-card">
                     <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Need more tools?</h2>
-                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Access advanced settings, user management, and audits through the Django admin console.</p>
-                    <a href="{% url 'admin:index' %}" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
-                        <span><i class="fa-solid fa-up-right-from-square mr-2"></i>Open Django admin</span>
+                    <p class="card-body mt-2">Access advanced user management, audits, and granular configuration inside the Django admin console.</p>
+                    <a href="{% url 'admin:index' %}" class="mt-4 inline-flex items-center text-sm font-semibold text-sky-600 hover:text-sky-500 dark:text-sky-300 dark:hover:text-sky-200">
+                        Open Django admin
+                        <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
                     </a>
                 </div>
-            </div>
+            </aside>
         </section>
     </div>
 </section>
